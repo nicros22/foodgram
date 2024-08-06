@@ -33,4 +33,5 @@ class Follow(models.Model):
     author = models.ForeignKey(
         User,
         related_name='following',
+        on_delete=models.CASCADE
     )

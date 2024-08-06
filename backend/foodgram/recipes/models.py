@@ -21,6 +21,14 @@ class Recipe(models.Model):
         verbose_name='Время приготовления (в минутах)'
     )
 
+    class Meta:
+        ordering = ['-id']
+        verbose_name = 'Рецепт'
+        verbose_name_plural = 'Рецепты'
+
+    def __str__(self):
+        return self.title
+
 
 class Tag(models.Model):
     title = models.CharField(max_length=256)
@@ -47,10 +55,6 @@ class Ingredient(models.Model):
             models.UniqueConstraint(
                 fields=('title', 'unit'),
                 name='unique_ingredient'
-            ),
-            models.Index(
-                fields=['title'],
-                name='index_title'
             ),
         )
 
