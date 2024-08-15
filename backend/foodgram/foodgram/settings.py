@@ -115,7 +115,6 @@ SIMPLE_JWT = {
 
 STATIC_URL = '/static/'
 
-STATICFILES_DIRS = ((BASE_DIR / 'static/'),)
 
 DEFAULT_FROM_EMAIL = 'foodgram@foodgram.com'
 

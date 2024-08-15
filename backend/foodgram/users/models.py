@@ -14,6 +14,12 @@ class User(AbstractUser):
         max_length=254,
         unique=True,
     )
+    avatar = models.ImageField(
+        'Аватар',
+        upload_to='avatars/',
+        null=True,
+        blank=True)
+
 
     class Meta:
         ordering = ['id']

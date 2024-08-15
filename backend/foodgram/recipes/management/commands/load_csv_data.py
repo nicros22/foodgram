@@ -21,8 +21,8 @@ class Command(BaseCommand):
                 reader = csv.reader(csv_file)
                 data_to_insert = [
                     model(
-                        title=row[0],
-                        unit=row[1]
+                        name=row[0],
+                        measurement_unit=row[1]
                     ) for row in reader
                 ]
                 model.objects.bulk_create(data_to_insert)

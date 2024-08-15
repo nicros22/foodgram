@@ -8,7 +8,10 @@ User = get_user_model()
 
 
 class Recipe(models.Model):
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    author = models.ForeignKey(User,
+                               verbose_name='Автор рецепта',
+                               related_name='recipes',
+                               on_delete=models.CASCADE)
     title = models.CharField(max_length=256)
     image = models.ImageField(upload_to='recipes/')
     text = models.TextField()
@@ -31,7 +34,7 @@ class Recipe(models.Model):
 
 
 class Tag(models.Model):
-    title = models.CharField(max_length=256)
+    name = models.CharField(max_length=256)
     slug = models.SlugField(unique=True)
 
     class Meta:
@@ -40,12 +43,12 @@ class Tag(models.Model):
         verbose_name_plural = 'Теги'
 
     def __str__(self):
-        return self.title
+        return self.name
 
 
 class Ingredient(models.Model):
-    title = models.CharField(max_length=256)
-    unit = models.CharField(max_length=64)
+    name = models.CharField(max_length=256)
+    measurement_unit = models.CharField(max_length=64)
 
     class Meta:
         ordering = ['-id']
@@ -53,7 +56,7 @@ class Ingredient(models.Model):
         verbose_name_plural = 'Ингредиенты'
         constraints = (
             models.UniqueConstraint(
-                fields=('title', 'unit'),
+                fields=('name', 'measurement_unit'),
                 name='unique_ingredient'
             ),
         )
