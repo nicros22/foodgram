@@ -65,7 +65,7 @@ class Ingredient(models.Model):
         return self.title
 
 
-class Favourite(models.Model):
+class Favorite(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
 
@@ -101,35 +101,29 @@ class ShoppingCart(models.Model):
         return f'{self.user} добавил рецепт "{self.recipe}" в корзину'
 
 
-# class User(AbstractUser):
-#     """Базовая модель пользователей."""
-#
-#     email = models.EmailField(unique=True,
-#                               verbose_name='Email',
-#                               max_length=MAX_LENGTH_EMAIL)
-#     bio = models.TextField(blank=True, verbose_name='О себе')
-#     role = models.CharField(max_length=MAX_LENGTH_MODEL,
-#                             choices=ROLE_CHOICES,
-#                             default='user',
-#                             verbose_name='Роль')
-#
-#     class Meta:
-#         verbose_name = 'Пользователь'
-#         verbose_name_plural = 'Пользователи'
-#         ordering = ('username',)
-#
-#     def __str__(self):
-#         return self.username
-#
-#     @property
-#     def is_moderator(self):
-#         return self.role == 'moderator'
-#
-#     @property
-#     def is_admin(self):
-#         return self.role == 'admin'
-#
-#     def clean(self):
-#         if self.username.lower() == 'me':
-#             raise ValidationError('Username "me" is not allowed.')
+class IngredientRecipe(models.Model):
+    ingredient = models.ForeignKey(
+        Ingredient,
+        on_delete=models.CASCADE,
+        related_name='ingredient_recipes'
+    )
+    recipe = models.ForeignKey(
+        Recipe,
+        on_delete=models.CASCADE,
+        related_name='ingredient_recipes'
+    )
+    amount = models.IntegerField(
+        validators=[MinValueValidator(1)],
+        verbose_name='Количество')
 
+
+class ShortLink(models.Model):
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
+    link = models.CharField(max_length=20, unique=True)
+
+    class Meta:
+        verbose_name = 'Сокращенная ссылка'
+        verbose_name_plural = 'Сокращенные ссылки'
+
+    def __str__(self):
+        return self.link
