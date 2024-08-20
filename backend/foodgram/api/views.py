@@ -30,7 +30,7 @@ from .serializers import (
     RecipeCreateSerializer,
     FavoriteSerializer)
 from .paginators import UserPagination
-from recipes.models import Tag, Ingredient, Recipe, ShoppingCart, IngredientRecipe
+from recipes.models import Tag, Ingredient, Recipe, ShoppingCart, IngredientRecipe, Favorite
 from users.models import Follow
 from .permissions import AuthorPermission
 from .utils.generate_shopping_list import generate_shopping_list, generate_pdf
@@ -177,9 +177,10 @@ class UserViewSet(CreateModelMixin,
 
 class RecipeViewSet(ModelViewSet):
     queryset = Recipe.objects.all()
-    serializer_class = RecipeInfoSerializer
+    serializer_class = RecipeCreateSerializer
     permission_classes = (AuthorPermission,)
-    filter_backends = DjangoFilterBackend
+    pagination_class = UserPagination
+    filter_backends = (DjangoFilterBackend,)
     filterset_class = RecipeFilter
 
     def get_serializer_class(self):

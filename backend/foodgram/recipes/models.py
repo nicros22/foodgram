@@ -12,7 +12,7 @@ class Recipe(models.Model):
                                verbose_name='Автор рецепта',
                                related_name='recipes',
                                on_delete=models.CASCADE)
-    title = models.CharField(max_length=256)
+    name = models.CharField(max_length=256)
     image = models.ImageField(upload_to='recipes/')
     text = models.TextField()
     ingredients = models.ManyToManyField('Ingredient')
@@ -30,7 +30,7 @@ class Recipe(models.Model):
         verbose_name_plural = 'Рецепты'
 
     def __str__(self):
-        return self.title
+        return self.name
 
 
 class Tag(models.Model):
@@ -62,12 +62,13 @@ class Ingredient(models.Model):
         )
 
     def __str__(self):
-        return self.title
+        return self.name
 
 
 class Favorite(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE,
+                               related_name='favorites')
 
     class Meta:
         verbose_name = 'Избранное'
@@ -85,7 +86,8 @@ class Favorite(models.Model):
 
 class ShoppingCart(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE,
+                               related_name='shopping_cart')
 
     class Meta:
         verbose_name = 'Корзина'
