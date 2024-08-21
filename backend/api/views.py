@@ -17,6 +17,7 @@ from rest_framework_simplejwt.tokens import AccessToken
 from recipes.models import (Favorite, Ingredient, IngredientRecipe, Recipe,
                             ShoppingCart, Tag)
 from users.models import Follow
+
 from .filters import IngredientFilter, RecipeFilter
 from .paginators import UserPagination
 from .permissions import AuthorPermission
