@@ -1,35 +1,38 @@
-from rest_framework import serializers, status
-from django.shortcuts import get_object_or_404
 from django.contrib.auth import get_user_model
 from drf_extra_fields.fields import Base64ImageField
-from django.core.files.base import ContentFile
+from rest_framework import serializers, status
 from rest_framework.exceptions import ValidationError
-from recipes.models import Tag, Ingredient, Recipe, IngredientRecipe, Favorite
-from .utils.base64_avatar_converter import Base64AvatarConverter
 from rest_framework.fields import SerializerMethodField
+
+from recipes.models import Favorite, Ingredient, IngredientRecipe, Recipe, Tag
 from users.models import Follow
+from .utils.base64_avatar_converter import Base64AvatarConverter
 
 User = get_user_model()
 
 
 class UserSerializer(serializers.ModelSerializer):
-    is_subscribed = serializers.SerializerMethodField(read_only=True, default=False)
+    is_subscribed = serializers.SerializerMethodField(read_only=True,
+                                                      default=False)
 
     def get_is_subscribed(self, obj):
         request = self.context.get('request')
         if request and not request.user.is_anonymous:
-            return Follow.objects.filter(user=request.user, author=obj).exists()
+            return Follow.objects.filter(user=request.user,
+                                         author=obj).exists()
         return False
 
     class Meta:
         model = User
-        fields = ('id', 'username', 'email', 'first_name', 'last_name', 'avatar', 'is_subscribed')
+        fields = ('id', 'username', 'email',
+                  'first_name', 'last_name', 'avatar', 'is_subscribed')
 
 
 class UserCreateSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
-        required_fields = ['username', 'email', 'first_name', 'last_name', 'password']
+        required_fields = ['username', 'email', 'first_name',
+                           'last_name', 'password']
         for field in required_fields:
             if field not in data:
                 raise ValidationError({field: "This field is required."})
@@ -205,7 +208,6 @@ class RecipeCreateSerializer(RecipeInfoSerializer):
             ]
         )
 
-
     def create(self, validated_data):
         tags = validated_data.pop('tags')
         ingredients = validated_data.pop('ingredients')
@@ -213,7 +215,6 @@ class RecipeCreateSerializer(RecipeInfoSerializer):
         recipe.tags.set(tags)
         self.set_ingredients(recipe, ingredients)
         return recipe
-
 
     def update(self, instance, validated_data):
         instance.tags.clear()
