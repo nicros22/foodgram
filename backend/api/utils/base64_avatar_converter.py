@@ -1,7 +1,7 @@
 import base64
 
-from rest_framework.serializers import ImageField
 from django.core.files.base import ContentFile
+from rest_framework.serializers import ImageField
 
 
 class Base64AvatarConverter(ImageField):

@@ -1,6 +1,7 @@
-from recipes.models import ShortLink
 from random import choice
 from string import ascii_letters, digits
+
+from recipes.models import ShortLink
 
 
 def create_short_link(recipe):

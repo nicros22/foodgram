@@ -6,6 +6,7 @@ from rest_framework.fields import SerializerMethodField
 
 from recipes.models import Favorite, Ingredient, IngredientRecipe, Recipe, Tag
 from users.models import Follow
+
 from .utils.base64_avatar_converter import Base64AvatarConverter
 
 User = get_user_model()

@@ -1,4 +1,5 @@
 from io import BytesIO
+
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
 
@@ -7,7 +8,8 @@ def generate_shopping_list(ingredients):
     shopping_list = 'Список покупок\n\n'
     for ingredient in ingredients:
         shopping_list += (
-            f"{ingredient['name']} - {ingredient['amount']} {ingredient['measurement_unit']}\n"
+            f"{ingredient['name']} - {ingredient['amount']} "
+            f"{ingredient['measurement_unit']}\n"
         )
     return shopping_list
 
