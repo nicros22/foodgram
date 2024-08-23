@@ -11,7 +11,7 @@ class Recipe(models.Model):
                                related_name='recipes',
                                on_delete=models.CASCADE)
     name = models.CharField(max_length=256)
-    image = models.ImageField(upload_to='data/recipes/')
+    image = models.ImageField(upload_to='recipes/')
     text = models.TextField()
     ingredients = models.ManyToManyField('Ingredient')
     tags = models.ManyToManyField('Tag',
@@ -64,7 +64,8 @@ class Ingredient(models.Model):
 
 
 class Favorite(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE,
+                             related_name='favorites')
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE,
                                related_name='favorites')
 
