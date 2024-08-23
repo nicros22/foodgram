@@ -222,14 +222,7 @@ class RecipeCreateSerializer(RecipeInfoSerializer):
         IngredientRecipe.objects.filter(recipe=instance).delete()
         instance.tags.set(validated_data.pop('tags'))
         ingredients = validated_data.pop('ingredients')
-        for ingredient in ingredients:
-            ingredient_id = ingredient['id']
-            amount = ingredient['amount']
-            IngredientRecipe.objects.create(
-                recipe=instance,
-                ingredient_id=ingredient_id,
-                amount=amount
-            )
+        self.set_ingredients(instance, ingredients)
         return super().update(instance, validated_data)
 
     def to_representation(self, instance):
