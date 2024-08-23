@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.db.models import Count
 
-from .models import Ingredient, Recipe
+from .models import Ingredient, Recipe, Tag
 
 
 @admin.register(Recipe)
@@ -22,4 +22,9 @@ class RecipeAdmin(admin.ModelAdmin):
 
 @admin.register(Ingredient)
 class IngredientAdmin(admin.ModelAdmin):
+    search_fields = ['name']
+
+
+@admin.register(Tag)
+class TagAdmin(admin.ModelAdmin):
     search_fields = ['name']
