@@ -15,7 +15,7 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         logger = logging.getLogger(__name__)
         for model, csv_filename in DATA_NAMES.items():
-            with open(Path(__file__).parents[3] / 'static' / csv_filename, 'r',
+            with open(Path(__file__).parents[3] / 'data' / csv_filename, 'r',
                       encoding='utf-8') as csv_file:
                 reader = csv.reader(csv_file)
                 data_to_insert = [
