@@ -16,6 +16,7 @@ DEBUG = os.getenv('DEBUG', default=False)
 
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split(',')
 
+CSRF_TRUSTED_ORIGINS = os.getenv('ALLOWED_HOSTS').split(',')
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -87,6 +88,8 @@ else:
     }
 
 AUTH_USER_MODEL = 'users.User'
+
+
 
 AUTH_PASSWORD_VALIDATORS = [
     {
