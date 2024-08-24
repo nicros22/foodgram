@@ -6,7 +6,8 @@ User = get_user_model()
 
 
 class Ingredient(models.Model):
-    name = models.CharField(max_length=256)
+    name = models.CharField(max_length=256,
+                            db_index=True)
     measurement_unit = models.CharField(max_length=64)
 
     class Meta:
@@ -20,7 +21,7 @@ class Ingredient(models.Model):
         )
 
     def __str__(self):
-        return self.name
+        return f'{self.name} - {self.measurement_unit}'
 
 
 class Recipe(models.Model):
@@ -111,19 +112,17 @@ class IngredientRecipe(models.Model):
     ingredient = models.ForeignKey(
         Ingredient,
         on_delete=models.CASCADE,
-        related_name='ingredient_recipes'
     )
     recipe = models.ForeignKey(
         Recipe,
         on_delete=models.CASCADE,
-        related_name='ingredient_recipes'
     )
     amount = models.IntegerField(
         validators=[MinValueValidator(1)],
         verbose_name='Количество')
 
     class Meta:
-        ordering = ('-id', )
+        default_related_name = 'ingredientrecipeset'
         verbose_name = 'Ингредиент в рецепте'
         verbose_name_plural = 'Ингредиенты в рецепте'
 
