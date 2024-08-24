@@ -9,12 +9,6 @@ from recipes.models import Favorite, Ingredient, IngredientRecipe, Recipe, Tag
 from users.models import Follow
 
 from .utils.base64_avatar_converter import Base64AvatarConverter
-from rest_framework.relations import PrimaryKeyRelatedField
-
-
-class CustomPrimaryKeyRelatedField(PrimaryKeyRelatedField):
-    def to_representation(self, value):
-        return value.id
 
 User = get_user_model()
 
@@ -208,9 +202,7 @@ class RecipeCreateSerializer(RecipeInfoSerializer):
                   'image',
                   'cooking_time',)
 
-    @transaction.atomic
     def set_ingredients(self, ingredients, recipe):
-        print(f'set {ingredients}')
         IngredientRecipe.objects.bulk_create(
             [
                 IngredientRecipe(
@@ -222,12 +214,9 @@ class RecipeCreateSerializer(RecipeInfoSerializer):
             ]
         )
 
-    @transaction.atomic
     def create(self, validated_data):
         tags = validated_data.pop('tags')
         ingredients = validated_data.pop('ingredients')
-        print(f'create {ingredients}')
-        print(tags)
         recipe = Recipe.objects.create(**validated_data)
         recipe.tags.set(tags)
         self.set_ingredients(ingredients, recipe)
@@ -258,7 +247,6 @@ class RecipeCreateSerializer(RecipeInfoSerializer):
         return tags
 
     def validate_ingredients(self, ingredients):
-        print(ingredients)
         ingredients_list = []
         if not ingredients:
             raise serializers.ValidationError(

@@ -174,9 +174,6 @@ class RecipeViewSet(ModelViewSet):
     filter_backends = (DjangoFilterBackend,)
     filterset_class = RecipeFilter
 
-    def create(self, request, *args, **kwargs):
-        print(request.data)  # Log the incoming request data
-        return super().create(request, *args, **kwargs)
 
     def get_serializer_class(self):
         if self.request.method == 'GET':
