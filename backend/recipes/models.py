@@ -5,6 +5,24 @@ from django.db import models
 User = get_user_model()
 
 
+class Ingredient(models.Model):
+    name = models.CharField(max_length=256)
+    measurement_unit = models.CharField(max_length=64)
+
+    class Meta:
+        verbose_name = 'Ингредиент'
+        verbose_name_plural = 'Ингредиенты'
+        constraints = (
+            models.UniqueConstraint(
+                fields=('name', 'measurement_unit'),
+                name='unique_ingredient'
+            ),
+        )
+
+    def __str__(self):
+        return self.name
+
+
 class Recipe(models.Model):
     author = models.ForeignKey(User,
                                verbose_name='Автор рецепта',
@@ -13,7 +31,9 @@ class Recipe(models.Model):
     name = models.CharField(max_length=256)
     image = models.ImageField(upload_to='recipes/')
     text = models.TextField()
-    ingredients = models.ManyToManyField('Ingredient')
+    ingredients = models.ManyToManyField(Ingredient,
+                                         through='IngredientRecipe',
+                                         verbose_name='Ингредиенты')
     tags = models.ManyToManyField('Tag',
                                   verbose_name='Теги',
                                   related_name='recipes')
@@ -21,9 +41,13 @@ class Recipe(models.Model):
         validators=[MinValueValidator(1)],
         verbose_name='Время приготовления (в минутах)'
     )
+    pub_date = models.DateTimeField(
+        verbose_name='Дата публикации',
+        auto_now_add=True
+    )
 
     class Meta:
-        ordering = ['-id']
+        ordering = ['-pub_date']
         verbose_name = 'Рецепт'
         verbose_name_plural = 'Рецепты'
 
@@ -39,25 +63,6 @@ class Tag(models.Model):
         ordering = ['-id']
         verbose_name = 'Тег'
         verbose_name_plural = 'Теги'
-
-    def __str__(self):
-        return self.name
-
-
-class Ingredient(models.Model):
-    name = models.CharField(max_length=256)
-    measurement_unit = models.CharField(max_length=64)
-
-    class Meta:
-        ordering = ['-id']
-        verbose_name = 'Ингредиент'
-        verbose_name_plural = 'Ингредиенты'
-        constraints = (
-            models.UniqueConstraint(
-                fields=('name', 'measurement_unit'),
-                name='unique_ingredient'
-            ),
-        )
 
     def __str__(self):
         return self.name
@@ -116,6 +121,15 @@ class IngredientRecipe(models.Model):
     amount = models.IntegerField(
         validators=[MinValueValidator(1)],
         verbose_name='Количество')
+
+    class Meta:
+        ordering = ('-id', )
+        verbose_name = 'Ингредиент в рецепте'
+        verbose_name_plural = 'Ингредиенты в рецепте'
+
+    def __str__(self):
+        return (f'{self.ingredient} в рецепте "{self.recipe}'
+                f'в количестве {self.amount})')
 
 
 class ShortLink(models.Model):
