@@ -5,6 +5,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from djoser.serializers import SetPasswordSerializer
 from rest_framework import status
 from rest_framework.decorators import action
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.generics import GenericAPIView
 from rest_framework.mixins import (CreateModelMixin, ListModelMixin,
                                    RetrieveModelMixin)
@@ -20,12 +21,13 @@ from users.models import Follow
 
 from .filters import IngredientFilter, RecipeFilter
 from .paginators import UserPagination
-from .permissions import AuthorPermission
+from .permissions import AuthorAuthenticatedPermission, AuthorPermission
 from .serializers import (FavoriteSerializer, IngredientSerializer,
                           RecipeCreateSerializer, RecipeInfoSerializer,
                           SubscribeSerializer, TagSerializer,
                           TokenCreateSerializer, UserAvatarSetSerializer,
-                          UserCreateSerializer, UserSerializer)
+                          UserCreateSerializer, UserSerializer,
+                          ShoppingCartSerializer)
 from .utils.create_short_link import create_short_link
 from .utils.generate_shopping_list import generate_pdf, generate_shopping_list
 
@@ -184,7 +186,9 @@ class RecipeViewSet(ModelViewSet):
             self.action in [
                 'favorite',
                 'shopping_cart',
-                'download_shopping_cart'
+                'download_shopping_cart',
+                'create',
+                'update'
             ]
         ):
             self.permission_classes = (IsAuthenticated,)
@@ -206,21 +210,23 @@ class RecipeViewSet(ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
 
-    @action(detail=True, methods=['post'],
+    @action(detail=True, methods=['POST', 'DELETE'],
             permission_classes=[AuthorPermission])
-    def shopping_cart(self, request, pk=None):
-        recipe = self.get_object()
-        if ShoppingCart.objects.filter(
-                user=request.user, recipe=recipe).exists():
-            return Response(
-                {"detail": "Рецепт уже находится в списке покупок"},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-        ShoppingCart.objects.create(user=request.user, recipe=recipe)
-        return Response(
-            {"detail": "Рецепт успешно добавлен в список покупок"},
-            status=status.HTTP_201_CREATED
-        )
+    def shopping_cart(self, request, pk):
+        if request.method == 'DELETE':
+            shopping_cart = get_object_or_404(
+                ShoppingCart, user=request.user, recipe=pk)
+            shopping_cart.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        recipe = get_object_or_404(Recipe, id=pk)
+        data = {
+            'user': request.user.id,
+            'recipe': recipe.id
+        }
+        serializer = ShoppingCartSerializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     @action(detail=False, methods=['get'],
             permission_classes=[AuthorPermission])
