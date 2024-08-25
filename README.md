@@ -14,7 +14,20 @@
 ## Посмотреть проект можно по адресу: 
  
 ``` 
-https://foodgramnicro.zapto.org/recipes 
+https://foodgramnicro.zapto.org
+```
+
+## Пример env файла: 
+ 
+``` 
+POSTGRES_USER=django_user
+POSTGRES_PASSWORD=mysecretpassword
+POSTGRES_DB=django
+DB_HOST=db
+DB_PORT=5432
+DEBUG=False
+USE_SQLITE=True
+ALLOWED_HOSTS=100.100.100.100,example.org,127.0.0.1,localhost
 ``` 
  
 ## Руководство по запуску проекта из DockerHub: 
