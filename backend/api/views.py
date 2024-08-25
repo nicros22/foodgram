@@ -128,28 +128,29 @@ class UserViewSet(CreateModelMixin,
         permission_classes=[IsAuthenticated],
     )
     def subscribe(self, request, pk=None):
-        user = request.user
         author = get_object_or_404(User, pk=pk)
-
         if request.method == 'POST':
-            if Follow.objects.filter(user=user, author=author).exists():
+            if Follow.objects.filter(user=request.user, author=author).exists():
                 return Response(
                     {"detail": "You are already following this user."},
                     status=status.HTTP_400_BAD_REQUEST
                 )
-            if user == author:
+            if request.user == author:
                 return Response(
                     {"detail": "You cannot subscribe to yourself."},
                     status=status.HTTP_400_BAD_REQUEST
                 )
-
-            Follow.objects.create(user=user, author=author)
+            Follow.objects.create(user=request.user, author=author)
             serializer = SubscribeSerializer(author,
                                              context={'request': request})
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-        follow = get_object_or_404(Follow, user=user, author=author)
-        follow.delete()
+        subscription = Follow.objects.filter(user=request.user, author=author).first()
+        if not subscription:
+            return Response(
+                {"detail": "Subscription does not exist."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        subscription.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(detail=False, methods=['get'],
@@ -212,12 +213,19 @@ class RecipeViewSet(ModelViewSet):
     @action(detail=True, methods=['POST', 'DELETE'],
             permission_classes=[AuthorPermission])
     def shopping_cart(self, request, pk):
+        recipe = get_object_or_404(Recipe, id=pk)
         if request.method == 'DELETE':
-            shopping_cart = get_object_or_404(
-                ShoppingCart, user=request.user, recipe=pk)
+            try:
+                shopping_cart = ShoppingCart.objects.get(
+                    user=request.user, recipe_id=pk
+                )
+            except ShoppingCart.DoesNotExist:
+                return Response(
+                    {"detail": "Recipe not in shopping cart."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
             shopping_cart.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
-        recipe = get_object_or_404(Recipe, id=pk)
         data = {
             'user': request.user.id,
             'recipe': recipe.id
@@ -263,12 +271,19 @@ class RecipeViewSet(ModelViewSet):
         methods=['POST', 'DELETE'],
         permission_classes=[IsAuthenticated])
     def favorite(self, request, pk):
+        recipe = get_object_or_404(Recipe, id=pk)
         if request.method == 'DELETE':
-            favorite = get_object_or_404(
-                Favorite, user=request.user, recipe=pk)
+            try:
+                favorite = Favorite.objects.get(
+                    user=request.user, recipe_id=pk
+                )
+            except Favorite.DoesNotExist:
+                return Response(
+                    {"detail": "Recipe not in favorites."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
             favorite.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
-        recipe = get_object_or_404(Recipe, id=pk)
         data = {
             'user': request.user.id,
             'recipe': recipe.id

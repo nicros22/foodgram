@@ -1,6 +1,9 @@
 from io import BytesIO
 
+from pathlib import Path
 from reportlab.lib.pagesizes import A4
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfgen import canvas
 
 
@@ -16,7 +19,10 @@ def generate_shopping_list(ingredients):
 
 def generate_pdf(shopping_list):
     buffer = BytesIO()
+    font_path = Path(__file__).resolve().parents[2] / 'data' / 'Anticva.ttf'
+    pdfmetrics.registerFont(TTFont('Anticva', str(font_path)))
     pdf = canvas.Canvas(buffer, pagesize=A4)
+    pdf.setFont('Anticva', 16)
     width, height = A4
 
     y = height - 40
