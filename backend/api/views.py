@@ -1,6 +1,6 @@
 from django.contrib.auth import authenticate, get_user_model
 from django.http.response import FileResponse
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 from django_filters.rest_framework import DjangoFilterBackend
 from djoser.serializers import SetPasswordSerializer
 from rest_framework import status
@@ -299,8 +299,5 @@ class RecipeViewSet(ModelViewSet):
 @api_view(['GET'])
 def get_recipe(request, short_link):
     link = get_object_or_404(ShortLink, link=short_link)
-    recipe = get_object_or_404(Recipe, id=link.recipe_id)
-    return Response(
-        status=status.HTTP_200_OK,
-        data=RecipeInfoSerializer(recipe,
-                                  context={'request': request}).data)
+    return redirect(
+        f'https://{request.META["HTTP_HOST"]}/recipes/{link.recipe_id}/')
