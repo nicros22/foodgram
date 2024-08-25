@@ -5,7 +5,6 @@ from django_filters.rest_framework import DjangoFilterBackend
 from djoser.serializers import SetPasswordSerializer
 from rest_framework import status
 from rest_framework.decorators import action
-from rest_framework.exceptions import PermissionDenied
 from rest_framework.generics import GenericAPIView
 from rest_framework.mixins import (CreateModelMixin, ListModelMixin,
                                    RetrieveModelMixin)
@@ -21,13 +20,13 @@ from users.models import Follow
 
 from .filters import IngredientFilter, RecipeFilter
 from .paginators import UserPagination
-from .permissions import AuthorAuthenticatedPermission, AuthorPermission
+from .permissions import AuthorPermission
 from .serializers import (FavoriteSerializer, IngredientSerializer,
                           RecipeCreateSerializer, RecipeInfoSerializer,
-                          SubscribeSerializer, TagSerializer,
-                          TokenCreateSerializer, UserAvatarSetSerializer,
-                          UserCreateSerializer, UserSerializer,
-                          ShoppingCartSerializer)
+                          ShoppingCartSerializer, SubscribeSerializer,
+                          TagSerializer, TokenCreateSerializer,
+                          UserAvatarSetSerializer, UserCreateSerializer,
+                          UserSerializer)
 from .utils.create_short_link import create_short_link
 from .utils.generate_shopping_list import generate_pdf, generate_shopping_list
 
