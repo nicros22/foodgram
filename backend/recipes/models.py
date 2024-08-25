@@ -94,10 +94,10 @@ class Favorite(models.Model):
 
 class ShoppingCart(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE,
-                               related_name='shopping_cart')
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE,)
 
     class Meta:
+        default_related_name = 'shopping_list'
         verbose_name = 'Корзина'
         verbose_name_plural = 'Корзины'
         constraints = (

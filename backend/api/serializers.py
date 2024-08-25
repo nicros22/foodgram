@@ -234,7 +234,6 @@ class RecipeCreateSerializer(RecipeInfoSerializer):
         return recipe
 
     def update(self, instance, validated_data):
-        print(validated_data)
         instance.tags.clear()
         IngredientRecipe.objects.filter(recipe=instance).delete()
         instance.tags.set(validated_data.pop('tags'))
@@ -281,7 +280,6 @@ class RecipeCreateSerializer(RecipeInfoSerializer):
         return tags
 
     def validate_ingredients(self, ingredients):
-        print(ingredients)
         ingredients_list = []
         if not ingredients:
             raise serializers.ValidationError(
@@ -335,7 +333,7 @@ class ShoppingCartSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         user = data['user']
-        if user.favorites.filter(recipe=data['recipe']).exists():
+        if user.shopping_list.filter(recipe=data['recipe']).exists():
             raise serializers.ValidationError(
                 'Рецепт уже добавлен в избранное.'
             )
