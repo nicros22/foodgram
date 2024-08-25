@@ -130,7 +130,8 @@ class UserViewSet(CreateModelMixin,
     def subscribe(self, request, pk=None):
         author = get_object_or_404(User, pk=pk)
         if request.method == 'POST':
-            if Follow.objects.filter(user=request.user, author=author).exists():
+            if Follow.objects.filter(user=request.user,
+                                     author=author).exists():
                 return Response(
                     {"detail": "You are already following this user."},
                     status=status.HTTP_400_BAD_REQUEST
@@ -144,7 +145,8 @@ class UserViewSet(CreateModelMixin,
             serializer = SubscribeSerializer(author,
                                              context={'request': request})
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        subscription = Follow.objects.filter(user=request.user, author=author).first()
+        subscription = Follow.objects.filter(user=request.user,
+                                             author=author).first()
         if not subscription:
             return Response(
                 {"detail": "Subscription does not exist."},
