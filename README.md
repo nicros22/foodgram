@@ -17,13 +17,6 @@
 https://foodgramnicro.zapto.org/recipes 
 ``` 
  
-## Данные от админки: 
- 
-``` 
-логин - nicrosp@gmail.com 
-пароль - ybrbnjcbr22 
-``` 
- 
 ## Руководство по запуску проекта из DockerHub: 
  
 1. создать папку foodgram 
