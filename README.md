@@ -54,19 +54,19 @@ sudo docker compose -f docker-compose.production.yml up
  
 ## Запуск проекта из GitHub 
  
-1. Клонируем ропозиторий:
+**1. Клонируем ропозиторий:**
  
 ```bash  
 git@github.com:nicros22/foodgram.git 
 ``` 
  
-2. Выполняем запуск докера из исходников в папке: 
+**2. Выполняем запуск докера из исходников в папке:**
  
 ```bash 
 sudo docker compose -f docker-compose.yml up 
 ``` 
  
-3. Миграции и сбор статики:
+**3. Миграции и сбор статики:**
  
 ```bash 
 sudo docker compose -f [имя-файла-docker-compose.yml] exec backend python manage.py migrate 
@@ -75,9 +75,9 @@ sudo docker compose -f [имя-файла-docker-compose.yml] exec backend pytho
  
 sudo docker compose -f [имя-файла-docker-compose.yml] exec backend cp -r /app/collected_static/. /static/static/ 
 ```
-4. Финальный этап (загрузка ингредиентов в бд):
+**4. Финальный этап (загрузка ингредиентов в бд):**
 
-Переходим в директорию, где находится manage.py и выполняем команду - 
+Переходим в директорию, где находится manage.py и выполняем команду:
 
 ```bash 
 python manage.py load_csv_data
