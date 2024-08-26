@@ -19,6 +19,7 @@ services:
     volumes:
       - static_volume:/backend_static
       - media_volume:/app/media/
+      -
   frontend:
     image: nicros22/foodgram_frontend
     env_file: .env
