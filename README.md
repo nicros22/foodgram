@@ -21,7 +21,7 @@
  
 ## Посмотреть проект можно по адресу: 
  
-[Сайт](https://foodgramnicro.zapto.org)
+[Сайт](https://foodgramnicro.zapto.org)\
 [Документация API](https://foodgramnicro.zapto.org/api/docs/)
 
 ## Пример env файла: 
