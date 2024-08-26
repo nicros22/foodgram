@@ -1,5 +1,6 @@
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
+from django.views.generic import TemplateView
 
 from .views import IngredientViewSet, RecipeViewSet, TagViewSet, UserViewSet
 
@@ -14,5 +15,10 @@ router.register('ingredients', IngredientViewSet, basename='ingredients')
 urlpatterns = [
     path('', include(router.urls)),
     path('', include('djoser.urls')),
-    path('auth/', include('djoser.urls.authtoken'))
+    path('auth/', include('djoser.urls.authtoken')),
+    path(
+        'docs/',
+        TemplateView.as_view(template_name='redoc.html'),
+        name='docs'
+    ),
 ]
