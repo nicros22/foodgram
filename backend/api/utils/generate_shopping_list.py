@@ -8,11 +8,14 @@ from reportlab.pdfgen import canvas
 
 
 def generate_shopping_list(ingredients):
+    if not ingredients:
+        return "Список покупок пуст.\n"
+
     shopping_list = 'Список покупок\n\n'
     for ingredient in ingredients:
         shopping_list += (
-            f"{ingredient['name']} - {ingredient['amount']} "
-            f"{ingredient['measurement_unit']}\n"
+            f"{ingredient['ingredient__name']} - {ingredient['amount']} "
+            f"{ingredient['ingredient__measurement_unit']}\n"
         )
     return shopping_list
 
