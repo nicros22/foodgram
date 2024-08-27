@@ -2,7 +2,7 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 from recipes.constants import MAIL_MAX_LENGTH, NAME_MAX_LENGTH
-from users.validators import validate_username
+from users.validators import validate_username, username_validator
 
 
 class User(AbstractUser):
@@ -20,7 +20,7 @@ class User(AbstractUser):
     username = models.CharField(
         max_length=NAME_MAX_LENGTH,
         unique=True,
-        validators=[validate_username],
+        validators=[validate_username, username_validator],
     )
     avatar = models.ImageField(
         'Аватар',

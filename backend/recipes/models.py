@@ -4,7 +4,7 @@ from django.db import models
 
 from recipes.constants import (LINK_MAX_LENGTH, MEASUREMENT_UNIT_MAX_LENGTH,
                                MIN_POSITIVE_VALUE, NAME_MAX_LENGTH,
-                               RECIPE_NAME_MAX_LENGTH)
+                               TAG_NAME_MAX_LENGTH, RECIPE_NAME_MAX_LENGTH)
 
 User = get_user_model()
 
@@ -66,8 +66,8 @@ class Recipe(models.Model):
 
 
 class Tag(models.Model):
-    name = models.CharField(max_length=NAME_MAX_LENGTH)
-    slug = models.SlugField(max_length=NAME_MAX_LENGTH,
+    name = models.CharField(max_length=TAG_NAME_MAX_LENGTH)
+    slug = models.SlugField(max_length=TAG_NAME_MAX_LENGTH,
                             unique=True)
 
     class Meta:
@@ -85,6 +85,7 @@ class UserRecipeBase(models.Model):
 
     class Meta:
         abstract = True
+        ordering = ['user']
         constraints = (
             models.UniqueConstraint(
                 fields=('user', 'recipe'),
@@ -98,21 +99,13 @@ class UserRecipeBase(models.Model):
 
 class Favorite(UserRecipeBase):
     class Meta(UserRecipeBase.Meta):
-        ordering = ['user']
         default_related_name = 'favorites'
         verbose_name = 'Избранное'
         verbose_name_plural = 'Избранные'
-        constraints = (
-            models.UniqueConstraint(
-                fields=('user', 'recipe'),
-                name='unique_favorite_user_recipe'
-            ),
-        )
 
 
 class ShoppingCart(UserRecipeBase):
     class Meta(UserRecipeBase.Meta):
-        ordering = ['user']
         default_related_name = 'shopping_carts'
         verbose_name = 'Корзина'
         verbose_name_plural = 'Корзины'
@@ -135,7 +128,8 @@ class IngredientRecipe(models.Model):
     )
     amount = models.PositiveSmallIntegerField(
         validators=[MinValueValidator(MIN_POSITIVE_VALUE)],
-        verbose_name='Количество')
+        verbose_name='Количество'
+    )
 
     class Meta:
         ordering = ['recipe']

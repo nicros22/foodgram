@@ -21,6 +21,7 @@ from api.permissions import AuthorPermission
 from api.serializers import (FavoriteSerializer, IngredientSerializer,
                              RecipeCreateSerializer, RecipeInfoSerializer,
                              ShoppingCartSerializer, SubscribeSerializer,
+                             SubscribeActionSerializer,
                              TagSerializer, TokenCreateSerializer,
                              UserAvatarSetSerializer, UserCreateSerializer,
                              UserSerializer)
@@ -144,36 +145,22 @@ class UserViewSet(CreateModelMixin,
         return Response({'message': 'password changed'},
                         status=status.HTTP_204_NO_CONTENT)
 
-    @action(
-        detail=True,
-        methods=['post', 'delete'],
-        permission_classes=[IsAuthenticated],
-    )
+    @action(detail=True, methods=['post', 'delete'],
+            permission_classes=[IsAuthenticated])
     def subscribe(self, request, pk=None):
         author = get_object_or_404(User, pk=pk)
         if request.method == 'POST':
-            if Follow.objects.filter(user=request.user,
-                                     author=author).exists():
-                return Response(
-                    {"detail": "You are already following this user."},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
-            if request.user == author:
-                return Response(
-                    {"detail": "You cannot subscribe to yourself."},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
-            Follow.objects.create(user=request.user, author=author)
-            serializer = SubscribeSerializer(author,
-                                             context={'request': request})
+            data = {'user': request.user.id, 'author': author.id}
+            serializer = SubscribeActionSerializer(data=data,
+                                                   context={'request': request})
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         subscription = Follow.objects.filter(user=request.user,
                                              author=author).first()
         if not subscription:
-            return Response(
-                {"detail": "Subscription does not exist."},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+            return Response({"detail": "Subscription does not exist."},
+                            status=status.HTTP_400_BAD_REQUEST)
         subscription.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
