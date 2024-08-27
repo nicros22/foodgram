@@ -20,11 +20,10 @@ from api.paginators import UserPagination
 from api.permissions import AuthorPermission
 from api.serializers import (FavoriteSerializer, IngredientSerializer,
                              RecipeCreateSerializer, RecipeInfoSerializer,
-                             ShoppingCartSerializer, SubscribeSerializer,
-                             SubscribeActionSerializer,
-                             TagSerializer, TokenCreateSerializer,
-                             UserAvatarSetSerializer, UserCreateSerializer,
-                             UserSerializer)
+                             ShoppingCartSerializer, SubscribeActionSerializer,
+                             SubscribeSerializer, TagSerializer,
+                             TokenCreateSerializer, UserAvatarSetSerializer,
+                             UserCreateSerializer, UserSerializer)
 from api.utils.create_short_link import create_short_link
 from api.utils.generate_shopping_list import (generate_pdf,
                                               generate_shopping_list)
@@ -151,8 +150,10 @@ class UserViewSet(CreateModelMixin,
         author = get_object_or_404(User, pk=pk)
         if request.method == 'POST':
             data = {'user': request.user.id, 'author': author.id}
-            serializer = SubscribeActionSerializer(data=data,
-                                                   context={'request': request})
+            serializer = SubscribeActionSerializer(
+                data=data,
+                context={'request': request}
+            )
             serializer.is_valid(raise_exception=True)
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)

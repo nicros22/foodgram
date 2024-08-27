@@ -4,7 +4,7 @@ from django.db import models
 
 from recipes.constants import (LINK_MAX_LENGTH, MEASUREMENT_UNIT_MAX_LENGTH,
                                MIN_POSITIVE_VALUE, NAME_MAX_LENGTH,
-                               TAG_NAME_MAX_LENGTH, RECIPE_NAME_MAX_LENGTH)
+                               RECIPE_NAME_MAX_LENGTH, TAG_NAME_MAX_LENGTH)
 
 User = get_user_model()
 

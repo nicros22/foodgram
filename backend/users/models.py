@@ -2,7 +2,7 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 from recipes.constants import MAIL_MAX_LENGTH, NAME_MAX_LENGTH
-from users.validators import validate_username, username_validator
+from users.validators import username_validator, validate_username
 
 
 class User(AbstractUser):
