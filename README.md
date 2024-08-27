@@ -1,5 +1,4 @@
 ![Foodgram deploy workflow](https://github.com/nicros22/foodgram/actions/workflows/main.yml/badge.svg?event=push)
-# Foodgram
 # Foodgram: Продуктовый помощник
  
 # Описание проекта:
