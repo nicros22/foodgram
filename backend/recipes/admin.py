@@ -1,15 +1,20 @@
 from django.contrib import admin
-from django.core.exceptions import ValidationError
 from django.db.models import Count
 
 from .models import (Favorite, Ingredient, IngredientRecipe, Recipe,
                      ShoppingCart, ShortLink, Tag)
 
 
+class IngredientInline(admin.TabularInline):
+    model = IngredientRecipe
+
+
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
+    list_display = ['name', 'author', 'favorite_count', 'get_ingredients',]
     search_fields = ['name', 'author__name']
     list_filter = ['tags']
+    inlines = (IngredientInline,)
 
     def get_queryset(self, request):
         queryset = super().get_queryset(request)
@@ -20,14 +25,12 @@ class RecipeAdmin(admin.ModelAdmin):
     def favorite_count(self, obj):
         return obj.favorite_count
 
-    def save_model(self, request, obj, form, change):
-        if not obj.ingredients.exists():
-            raise ValidationError(
-                'Рецепт должен содержать хотя бы один ингредиент.'
-            )
-        if not obj.tags.exists():
-            raise ValidationError('Рецепт должен содержать хотя бы один тег.')
-        super().save_model(request, obj, form, change)
+    def get_ingredients(self, obj):
+        return ', '.join([
+            ingredients.name for ingredients
+            in obj.ingredients.all()])
+
+    get_ingredients.short_description = 'Ингридиенты'
 
 
 @admin.register(Ingredient)
