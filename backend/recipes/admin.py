@@ -7,6 +7,7 @@ from .models import (Favorite, Ingredient, IngredientRecipe, Recipe,
 
 class IngredientInline(admin.TabularInline):
     model = IngredientRecipe
+    min_num = 1
 
 
 @admin.register(Recipe)
@@ -25,12 +26,11 @@ class RecipeAdmin(admin.ModelAdmin):
     def favorite_count(self, obj):
         return obj.favorite_count
 
+    @admin.display(description='Ингредиенты')
     def get_ingredients(self, obj):
         return ', '.join([
             ingredients.name for ingredients
             in obj.ingredients.all()])
-
-    get_ingredients.short_description = 'Ингредиенты'
 
 
 @admin.register(Ingredient)

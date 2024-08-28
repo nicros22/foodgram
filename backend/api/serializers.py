@@ -107,8 +107,8 @@ class SubscribeSerializer(UserSerializer):
         request = self.context.get('request')
         limit = request.GET.get('recipes_limit')
         recipes = obj.recipes.all()
-        limit = int(limit) if limit and limit.isdigit() else None
-        recipes = recipes[:limit]
+        if limit and limit.isdigit():
+            recipes = recipes[:int(limit)]
         serializer = RecipeBaseSerializer(recipes, many=True,
                                           context=self.context)
         return serializer.data
